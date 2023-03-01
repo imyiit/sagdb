@@ -10,7 +10,7 @@
     "test": "ts-node-dev test/index.ts"
   },
   "keywords": [],
-  "author": "",
+  "author": "baylit",
   "license": "ISC",
   "dependencies": {
     "lodash": "^4.17.21"
