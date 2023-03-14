@@ -5,12 +5,4 @@ export type Settings = {
   secret?: string;
 };
 
-export type Input =
-  | string
-  | number
-  | object
-  | bigint
-  | null
-  | undefined
-  | symbol
-  | [];
+export type Input = string | number | object | symbol;

@@ -1,22 +1,20 @@
 import fs from "fs";
 import lodash from "lodash";
 
-import { defaultDatabaseSettings } from "../constants/index";
+import { defaultDatabaseSettings } from "../constants";
 import { db as allDb, saveDB } from "../utils";
+
 import type { Input, Settings } from "../types";
 
 export default class Jdb<D = Input> {
   readonly name;
   readonly minify;
   readonly folder;
-  readonly hash;
   private readonly db: object;
 
   constructor(setting: Settings = defaultDatabaseSettings) {
     this.name = setting.name ?? defaultDatabaseSettings.name;
     this.minify = setting.minify ?? defaultDatabaseSettings.minify;
-
-    this.hash = "";
 
     const folderPathArr = (setting.folder ?? defaultDatabaseSettings.folder)
       .toLocaleLowerCase()
@@ -55,7 +53,7 @@ export default class Jdb<D = Input> {
     return this;
   }
 
-  get(key: string): D {
+  get(key: string): D | undefined {
     return lodash.get(this.db, key);
   }
 
@@ -68,7 +66,7 @@ export default class Jdb<D = Input> {
     return Array.isArray(type) ? "array" : typeof type;
   }
 
-  push(key: string, data: Input) {
+  push(key: string, data: D) {
     const item = this.get(key) as typeof Array | Omit<typeof Array, any>;
     if (!Array.isArray(item)) {
       this.set(key, [data]);
@@ -79,7 +77,7 @@ export default class Jdb<D = Input> {
     return item as Input;
   }
 
-  unpush(key: string, data: Input) {
+  unpush(key: string, data: D) {
     const item = this.get(key);
     if (!Array.isArray(item)) {
       return false;
@@ -91,20 +89,20 @@ export default class Jdb<D = Input> {
     return item;
   }
 
-  all() {
-    return allDb(this.folder);
-  }
-
   add(key: string, num = 1) {
-    const data = this.get(key);
+    let data = this.get(key);
 
     if (typeof data === "number") {
-      const Num = (data as number) + num;
+      const Num = data + num;
       this.set(key, Num);
       return Num;
     }
 
     return false;
+  }
+
+  all() {
+    return allDb(this.folder);
   }
 
   deleteAll() {
