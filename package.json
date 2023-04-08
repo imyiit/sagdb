@@ -1,5 +1,5 @@
 {
-  "name": "jdb",
+  "name": "sags-jdb",
   "version": "1.0.0",
   "description": "Local json database.",
   "main": "dist/index.js",
