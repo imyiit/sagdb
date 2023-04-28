@@ -4,7 +4,13 @@ import lodash from "lodash";
 import { defaultDatabaseSettings } from "../constants";
 import { db as allDb, saveDB } from "../utils";
 
-import type { Input, Settings } from "../types";
+export type Settings = {
+  name?: string;
+  folder?: string;
+  minify?: boolean;
+};
+
+export type Input = string | number | object | symbol;
 
 export default class Jdb<D = Input> {
   readonly name;
@@ -90,10 +96,22 @@ export default class Jdb<D = Input> {
   }
 
   add(key: string, num = 1) {
-    let data = this.get(key);
+    const data = this.get(key);
 
     if (typeof data === "number") {
       const Num = data + num;
+      this.set(key, Num);
+      return Num;
+    }
+
+    return false;
+  }
+
+  subtract(key: string, num = 1) {
+    const data = this.get(key);
+
+    if (typeof data === "number") {
+      const Num = data - num;
       this.set(key, Num);
       return Num;
     }
