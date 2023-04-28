@@ -104,6 +104,11 @@ export default class Jdb<D = Input> {
       return Num;
     }
 
+    if (!data) {
+      this.set(key, num);
+      return num;
+    }
+
     return false;
   }
 
@@ -114,6 +119,11 @@ export default class Jdb<D = Input> {
       const Num = data - num;
       this.set(key, Num);
       return Num;
+    }
+
+    if (!data) {
+      this.set(key, Number(num));
+      return num;
     }
 
     return false;
