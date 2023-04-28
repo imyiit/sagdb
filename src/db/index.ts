@@ -95,7 +95,7 @@ export default class Jdb<D = Input> {
     return item;
   }
 
-  add(key: string, num = 1) {
+  add(key: string, num: number = 1) {
     const data = this.get(key);
 
     if (typeof data === "number") {
@@ -107,7 +107,7 @@ export default class Jdb<D = Input> {
     return false;
   }
 
-  subtract(key: string, num = 1) {
+  subtract(key: string, num: number = 1) {
     const data = this.get(key);
 
     if (typeof data === "number") {

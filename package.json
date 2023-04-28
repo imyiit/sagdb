@@ -1,6 +1,6 @@
 {
   "name": "sagdb",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Local json database.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

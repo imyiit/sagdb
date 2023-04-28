@@ -1,5 +1,5 @@
-import Jdb from "../src";
+import Sags from "../src";
 
-const db = new Jdb();
+const db = new Sags();
 
 db.set("asd", "123");
