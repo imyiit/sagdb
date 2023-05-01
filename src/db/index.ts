@@ -1,8 +1,8 @@
-import fs from "fs";
+import fs from "node:fs";
 import lodash from "lodash";
 
 import { defaultDatabaseSettings } from "../constants";
-import { db as allDb, saveDB } from "../utils";
+import { allDb, saveDB } from "../utils";
 
 export type Settings = {
   name?: string;
@@ -29,17 +29,16 @@ export default class Jdb<D = Input> {
 
     this.folder = folderPathArr.join("/") + "/" + this.name;
 
-    if (!fs.existsSync(`./${this.folder}`)) {
-      folderPathArr.reduce((pre, cur, i, a) => {
-        pre += cur + "/";
-        if (!fs.existsSync(`.${pre}`)) {
-          fs.mkdirSync(`.${pre}`);
+    if (!fs.existsSync(`./${this.folder}.json`)) {
+      folderPathArr.reduce((previus, current, i, a) => {
+        previus += current + "/";
+        if (!fs.existsSync(`.${previus}`)) {
+          fs.mkdirSync(`.${previus}`);
         }
-
         if (i === a.length - 1) {
           fs.writeFileSync(`./${this.folder}.json`, "{}");
         }
-        return pre;
+        return previus;
       }, "/");
     }
 
@@ -47,7 +46,7 @@ export default class Jdb<D = Input> {
   }
 
   set(key: string, data: Input) {
-    const json_data = lodash.set(this.db, key, data ?? null);
+    const json_data = lodash.set(this.db, key, data);
     saveDB(json_data, this.folder, this.minify);
     return this;
   }

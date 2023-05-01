@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs from "node:fs";
 export function saveDB(data: object, folder: string, minify: boolean) {
   const json_data = minify
     ? JSON.stringify(data)
@@ -7,9 +7,6 @@ export function saveDB(data: object, folder: string, minify: boolean) {
   return fs.writeFileSync(`./${folder}.json`, json_data);
 }
 
-export function db(folder: string) {
+export function allDb(folder: string) {
   return JSON.parse(fs.readFileSync(`./${folder}.json`).toString());
 }
-
-
-
