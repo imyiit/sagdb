@@ -12,7 +12,7 @@ export type Settings = {
 
 export type Input = string | number | object | symbol;
 
-export default class Jdb<D = Input> {
+export default class Jdb<I = Input, O = Input> {
   readonly name;
   readonly minify;
   readonly folder;
@@ -58,7 +58,7 @@ export default class Jdb<D = Input> {
     return this;
   }
 
-  get(key: string): D | undefined {
+  get(key: string): O | undefined {
     return lodash.get(this.db, key);
   }
 
@@ -71,7 +71,7 @@ export default class Jdb<D = Input> {
     return Array.isArray(type) ? "array" : typeof type;
   }
 
-  push(key: string, data: D) {
+  push(key: string, data: I) {
     const item = this.get(key) as typeof Array | Omit<typeof Array, any>;
     if (!Array.isArray(item)) {
       this.set(key, [data]);
@@ -82,7 +82,7 @@ export default class Jdb<D = Input> {
     return item as Input;
   }
 
-  unpush(key: string, data: D) {
+  unpush(key: string, data: I) {
     const item = this.get(key);
     if (!Array.isArray(item)) {
       return false;
