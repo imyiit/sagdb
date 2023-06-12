@@ -1,6 +1,7 @@
 import Sagdb from "../src";
 
 const db = new Sagdb<string, false>();
+
 db.on("set", (key, new_data) => {
   console.log("set", { key, new_data });
 });
