@@ -1,8 +1,8 @@
-import fs from "node:fs";
+import fs from "fs";
 import lodash from "lodash";
 
 import { db_setting } from "./constant";
-import EventEmitter from "node:events";
+import { EventEmitter } from "events";
 
 type Settings = {
   name?: string;
