@@ -6,7 +6,7 @@
     "target": "ES6",
     "outDir": "./dist",
     "baseUrl": "./src",
-    "incremental": true,
+    "incremental": false,
     "moduleResolution": "node",
     "esModuleInterop": true,
     "strict": true,

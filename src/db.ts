@@ -72,7 +72,7 @@ export default class Sagdb<
     );
   }
 
-  all() {
+  all(): { [key: string]: any } {
     return JSON.parse(fs.readFileSync(`./${this.folder}.json`).toString());
   }
 
@@ -109,12 +109,17 @@ export default class Sagdb<
     let old_data = this.get(key);
 
     if (old_data === undefined) {
-      this.set(key, data);
+      this.set(key, (Array.isArray(data) ? data : [data]) as any);
       return this;
     }
 
     if (Array.isArray(old_data)) {
-      old_data.push((Array.isArray(data) ? [...data] : data) as any);
+      if (Array.isArray(data)) {
+        this.set(key, old_data.concat(data) as any);
+        return this;
+      }
+
+      old_data.push(data as any);
       this.set(key, old_data);
       return this;
     }
