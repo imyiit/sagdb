@@ -1,5 +1,10 @@
-import Sags from "../src";
+import Sagdb from "../src";
 
-const db = new Sags();
-db.set("a", "b");
-console.log(db.get("a")); // "b"
+const db = new Sagdb<string, false>();
+db.on("set", (a, b) => {
+  console.log(a, b);
+});
+
+db.push("", "");
+
+//db.emit("set", "naber mrq", "");

@@ -1,4 +1,8 @@
-lockfileVersion: '6.0'
+lockfileVersion: '6.1'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
 
 dependencies:
   lodash:
@@ -10,17 +14,14 @@ devDependencies:
     specifier: ^4.14.191
     version: 4.14.191
   '@types/node':
-    specifier: ^18.14.2
-    version: 18.14.2
+    specifier: ^20.3.0
+    version: 20.3.0
   ts-node:
     specifier: ^10.9.1
-    version: 10.9.1(@types/node@18.14.2)(typescript@4.9.5)
+    version: 10.9.1(@types/node@20.3.0)(typescript@4.9.5)
   ts-node-dev:
     specifier: ^2.0.0
-    version: 2.0.0(@types/node@18.14.2)(typescript@4.9.5)
-  typescript:
-    specifier: ^4.9.5
-    version: 4.9.5
+    version: 2.0.0(@types/node@20.3.0)(typescript@4.9.5)
 
 packages:
 
@@ -67,8 +68,8 @@ packages:
     resolution: {integrity: sha512-BdZ5BCCvho3EIXw6wUCXHe7rS53AIDPLE+JzwgT+OsJk53oBfbSmZZ7CX4VaRoN78N+TJpFi9QPlfIVNmJYWxQ==}
     dev: true
 
-  /@types/node@18.14.2:
-    resolution: {integrity: sha512-1uEQxww3DaghA0RxqHx0O0ppVlo43pJhepY51OxuQIKHpjbnYLA7vcdwioNPzIqmC2u3I/dmylcqjlh0e7AyUA==}
+  /@types/node@20.3.0:
+    resolution: {integrity: sha512-cumHmIAf6On83X7yP+LrsEyUOf/YlociZelmpRYaGFydoaPdxdt80MAbu6vWerQT2COCp2nPvHdsbD7tHn/YlQ==}
     dev: true
 
   /@types/strip-bom@3.0.0:
@@ -363,7 +364,7 @@ packages:
     hasBin: true
     dev: true
 
-  /ts-node-dev@2.0.0(@types/node@18.14.2)(typescript@4.9.5):
+  /ts-node-dev@2.0.0(@types/node@20.3.0)(typescript@4.9.5):
     resolution: {integrity: sha512-ywMrhCfH6M75yftYvrvNarLEY+SUXtUvU8/0Z6llrHQVBx12GiFk5sStF8UdfE/yfzk9IAq7O5EEbTQsxlBI8w==}
     engines: {node: '>=0.8.0'}
     hasBin: true
@@ -382,7 +383,7 @@ packages:
       rimraf: 2.7.1
       source-map-support: 0.5.21
       tree-kill: 1.2.2
-      ts-node: 10.9.1(@types/node@18.14.2)(typescript@4.9.5)
+      ts-node: 10.9.1(@types/node@20.3.0)(typescript@4.9.5)
       tsconfig: 7.0.0
       typescript: 4.9.5
     transitivePeerDependencies:
@@ -391,7 +392,7 @@ packages:
       - '@types/node'
     dev: true
 
-  /ts-node@10.9.1(@types/node@18.14.2)(typescript@4.9.5):
+  /ts-node@10.9.1(@types/node@20.3.0)(typescript@4.9.5):
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
     hasBin: true
     peerDependencies:
@@ -410,7 +411,7 @@ packages:
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.3
-      '@types/node': 18.14.2
+      '@types/node': 20.3.0
       acorn: 8.8.2
       acorn-walk: 8.2.0
       arg: 4.1.3
