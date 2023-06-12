@@ -79,6 +79,18 @@ db.get("key"); // -> apple
 
 <br><br>
 
+# **Update**
+
+Update get a callback function, give an old data and return mus be a same type old data.
+
+```js
+db.update("key",(old_data)=>{
+    const new_data = old_data.toUpperCase();
+
+    return new_data;
+})
+```
+
 ## **Delete**
 
 Delete item from database.
@@ -93,39 +105,6 @@ db.get("key"); // -> undefined
 
 <br><br>
 
-## **Type**
-
-Check type for this key.
-
-```js
-db.set("key", "apple");
-db.type("key"); // -> string
-
-db.set("array", [1, 2, 3]);
-db.type("array"); // -> array
-
-db.set("object", { a: 1, b: 2 }); // -> true
-db.type("object"); // -> object
-
-db.set("number", 1); // -> true
-db.type("number"); // -> number
-
-```
-
-<br><br>
-
-## **Has**
-
-Check database for this key.
-
-```js
-db.set("key", "apple"); // -> db
-db.has("key"); // -> true
-
-db.has("another"); // -> false
-```
-<br><br>
-
 ## **Push**
 
 Push item in **Array**.
@@ -136,20 +115,6 @@ db.get("array"); // -> ["apple"]
 
 db.push("array","banana"); // -> db
 db.get("array"); // -> ["apple", "banana"]
-```
-
-<br><br>
-
-## **Unpush**
-
-Unpush item from **Array**.
-
-```js
-db.unpush("array", "apple"); // -> db
-db.get("array"); // -> ["apple"]
-
-db.unpush("array", "apple"); // -> tdb
-db.get("array"); // -> []
 ```
 
 <br><br>
@@ -176,63 +141,12 @@ db.add("number", "asd"); // return Error
 ```
 <br><br>
 
-## **Subtract**
-
-Subtract number to **number** value.
-
-Value must be a **Number**.
-
-Default number is **1**.
-
-```js
-db.set("number", 1); // -> db
-db.get("number"); // -> 1
-
-db.subtract("number", 3); // -> db
-db.get("number"); // -> -2
-
-db.subtract("number"); // -> db
-db.get("number"); // -3
-
-db.subtract("number", "asd"); // return Error
-```
-<br><br>
 
 ## **All**
 
 Return all **Database** object.
 
-```js
-db.set("key", "apple");
-db.set("number", 1);
-db.all(); // -> {"key" : "apple", "number": 1}
-```
-
 <br><br>
-
-## **DeleteAll**
-
-Delete **all** database.
-
-```js
-db.set("key", "apple"); // -> db
-db.get("key"); // -> apple
-db.deleteAll(); // -> true
-db.get("key"); // -> undefined
-```
-
-<br><br>
-
-## **Dbsize**
-
-Get database **size**.
-
-Number type is **Byte** (byte).
-
-```js
-db.set("key", "apple"); // -> true
-db.dbSize(); // -> 15
-```
 
 ## **Extra**
 
