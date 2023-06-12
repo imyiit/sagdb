@@ -1,10 +1,12 @@
 import Sagdb from "../src";
 
 const db = new Sagdb<string, false>();
-db.on("set", (a, b) => {
-  console.log(a, b);
+db.on("set", (key, data) => {
+  console.log(key, data);
 });
 
-db.push("", "");
+db.on("delete", (key) => {
+  console.log(key);
+});
 
-//db.emit("set", "naber mrq", "");
+db.set("a", "b");

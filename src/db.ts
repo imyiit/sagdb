@@ -21,7 +21,7 @@ interface Events<
   Inp extends _Input = _Input,
   isArray extends boolean = boolean
 > {
-  set: [key: string, data: Inputs<Inp, isArray>];
+  set: [key: string, new_data: Inputs<Inp, isArray> | undefined];
   delete: [key: string];
   update: [
     key: string,
@@ -76,10 +76,12 @@ export default class Sagdb<
     return JSON.parse(fs.readFileSync(`./${this.folder}.json`).toString());
   }
 
-  set(key: string, data: Inputs<Input, isArray>) {
-    const json_data = lodash.set(this.all(), key, data);
+  set(key: string, new_data: Inputs<Input, isArray>) {
+    const old_data = this.get(key);
+    const json_data = lodash.set(this.all(), key, new_data);
     this.save(json_data);
-    this.emit("set", key, data);
+    this.emit("set", key, new_data);
+    this.emit("update", key, old_data, new_data);
     return this;
   }
 
@@ -90,6 +92,7 @@ export default class Sagdb<
     const old_data = this.get(key);
     const new_data = cb(old_data);
     this.set(key, new_data);
+    this.emit("set", key, new_data);
     this.emit("update", key, old_data, new_data);
   }
 
