@@ -20,14 +20,12 @@ $ npm install sagdb
 
 ```js
 //JavaScript version
-
 const Sagdb = require("sagdb").default;
 ```
 <br>
 
 ```ts
 //TypeScript version
-
 import Sagdb from "sagdb";
 ```
 
@@ -159,7 +157,7 @@ db.get("number"); // -> 4
 db.add("number"); // -> db
 db.get("number"); // 5
 
-db.add("number", "asd"); // return Error
+db.add("number", "asd"); // return false
 ```
 
 <br><br>
