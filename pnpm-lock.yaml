@@ -8,6 +8,9 @@ dependencies:
   lodash:
     specifier: ^4.17.21
     version: 4.17.21
+  uuid:
+    specifier: ^9.0.0
+    version: 9.0.0
 
 devDependencies:
   '@types/lodash':
@@ -16,6 +19,9 @@ devDependencies:
   '@types/node':
     specifier: ^20.3.0
     version: 20.3.0
+  '@types/uuid':
+    specifier: ^9.0.2
+    version: 9.0.2
   ts-node:
     specifier: ^10.9.1
     version: 10.9.1(@types/node@20.3.0)(typescript@5.1.3)
@@ -81,6 +87,10 @@ packages:
 
   /@types/strip-json-comments@0.0.30:
     resolution: {integrity: sha512-7NQmHra/JILCd1QqpSzl8+mJRc8ZHz3uDm8YV1Ks9IhK0epEiTw8aIErbvH9PI+6XbqhyIQy3462nEsn7UVzjQ==}
+    dev: true
+
+  /@types/uuid@9.0.2:
+    resolution: {integrity: sha512-kNnC1GFBLuhImSnV7w4njQkUiJi0ZXUycu1rUaouPqiKlXkh77JKgdRnTAp1x5eBwcIwbtI+3otwzuIDEuDoxQ==}
     dev: true
 
   /acorn-walk@8.2.0:
@@ -440,6 +450,11 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
+
+  /uuid@9.0.0:
+    resolution: {integrity: sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==}
+    hasBin: true
+    dev: false
 
   /v8-compile-cache-lib@3.0.1:
     resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}

@@ -1,42 +1,28 @@
 import fs from "fs";
 import lodash from "lodash";
-
-import { db_setting } from "./constant";
 import { EventEmitter } from "events";
 
-type Settings = {
+import { db_setting } from "../constant";
+import { save } from "../Utils";
+
+interface Settings {
   name?: string;
   folder?: string;
   minify?: boolean;
-};
-
-type _Input = string | object | symbol | number | null | boolean;
-
-type Inputs<
-  Inp extends _Input = _Input,
-  isArray extends boolean = false
-> = isArray extends true ? Inp[] : Inp;
-
-interface Events<
-  Inp extends _Input = _Input,
-  isArray extends boolean = boolean
-> {
-  set: [key: string, new_data: Inputs<Inp, isArray> | undefined];
-  delete: [key: string];
-  update: [
-    key: string,
-    old_data: Inputs<Inp, isArray> | undefined,
-    new_data: Inputs<Inp, isArray>
-  ];
 }
 
-export default class Sagdb<
-  Input extends Inputs = Inputs,
-  isArray extends boolean = false
-> {
-  private readonly name: string;
-  private readonly minify: boolean;
-  private readonly folder: string;
+export type Input = string | object | symbol | number | null | boolean;
+
+interface Events<Inp extends Input = Input> {
+  set: [key: string, new_data: Inp | undefined];
+  delete: [key: string];
+  update: [key: string, old_data: Inp | undefined, new_data: Inp];
+}
+
+export default class Sagdb<I extends Input = Input> {
+  readonly name: string;
+  readonly minify: boolean;
+  readonly folder: string;
   private readonly emitter: EventEmitter;
 
   constructor(setting: Settings = db_setting) {
@@ -66,27 +52,21 @@ export default class Sagdb<
   }
 
   private save(data: any) {
-    return fs.writeFileSync(
-      `./${this.folder}.json`,
-      this.minify ? JSON.stringify(data) : JSON.stringify(data, null, 2)
-    );
+    return save(data, this.folder, this.minify);
   }
 
   all(): { [key: string]: any } {
     return JSON.parse(fs.readFileSync(`./${this.folder}.json`).toString());
   }
 
-  set(key: string, new_data: Inputs<Input, isArray>) {
+  set(key: string, new_data: I) {
     const json_data = lodash.set(this.all(), key, new_data);
     this.save(json_data);
     this.emit("set", key, new_data);
     return this;
   }
 
-  update(
-    key: string,
-    cb: (old_data: Inputs<Input, isArray> | undefined) => Inputs<Input, isArray>
-  ) {
+  update(key: string, cb: (old_data: I | undefined) => I) {
     const old_data = this.get(key);
     const new_data = cb(old_data);
     this.set(key, new_data);
@@ -102,28 +82,7 @@ export default class Sagdb<
   }
 
   get(key: string) {
-    return lodash.get(this.all(), key) as Inputs<Input, isArray> | undefined;
-  }
-
-  push(key: string, data: Inputs<Input, isArray>) {
-    let old_data = this.get(key);
-
-    if (old_data === undefined) {
-      this.set(key, (Array.isArray(data) ? data : [data]) as any);
-      return this;
-    }
-
-    if (Array.isArray(old_data)) {
-      if (Array.isArray(data)) {
-        this.set(key, old_data.concat(data) as any);
-        return this;
-      }
-
-      old_data.push(data as any);
-      this.set(key, old_data);
-      return this;
-    }
-    return false;
+    return lodash.get(this.all(), key) as I | undefined;
   }
 
   add(key: string, data = 1) {
@@ -143,16 +102,16 @@ export default class Sagdb<
   }
 
   // EventEmitter
-  emit<K extends keyof Events<isArray>>(
+  private emit<K extends keyof Events>(
     eventName: K,
-    ...args: Events<Input, isArray>[K]
+    ...args: Events[K]
   ): boolean {
     return this.emitter.emit(eventName, ...args);
   }
 
-  on<K extends keyof Events<isArray>>(
+  on<K extends keyof Events>(
     eventName: K,
-    listener: (...args: Events<Input, isArray>[K]) => void
+    listener: (...args: Events[K]) => void
   ): EventEmitter {
     return this.emitter.on(eventName, listener as (...args: any[]) => void);
   }
