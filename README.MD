@@ -227,9 +227,9 @@ table.on("event_name", callback()); // -> Listening.
 ```ts
 table.on("add", callback(new_data));
 
-table.on("update", callback(callback(old_data, new_data)));
+table.on("update", callback(old_data, new_data));
 
-table.on("delete", callback());
+table.on("remove", callback(old_data));
 ```
 
 <br>

@@ -20,7 +20,7 @@ type Callback<I extends Input, T extends keyof Data<I>> =
 interface Events<I extends Input = Input> {
   add: [new_data: I | undefined];
   update: [old_data: I | undefined, new_data: I];
-  remove: [old_data: I[]];
+  remove: [old_data: I];
 }
 
 function Data<I extends Input>(data: I, old_data?: Data<I>): Data<I> {
