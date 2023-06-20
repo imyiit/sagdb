@@ -222,12 +222,12 @@ table.on("event_name", callback()); // -> Listening.
 
 <br>
 
-> _Example_
+**_Example_**
 
 ```ts
 table.on("add", callback(new_data));
 
-table.on("update", callback(callback(new_data, old_data)));
+table.on("update", callback(callback(old_data, new_data)));
 
 table.on("delete", callback());
 ```
