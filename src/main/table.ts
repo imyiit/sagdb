@@ -62,7 +62,7 @@ export class Table<I extends Input> {
 
   add(data: I) {
     const result = Data<I>(data);
-    
+
     this.data.push(result);
 
     const json_data = lodash.set(this.all(), this.key, this.data);
@@ -117,7 +117,7 @@ export class Table<I extends Input> {
 
     const old_data = lodash.filter(this.data, callback);
     const json_data = lodash.set(this.all(), this.key, this.data);
-    
+
     this.save(json_data);
     this.emit("remove", old_data);
 

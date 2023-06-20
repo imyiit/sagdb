@@ -63,7 +63,7 @@ export default class Sagdb<I extends Input = Input> {
     const json_data = lodash.set(this.all(), key, new_data);
     this.save(json_data);
     this.emit("set", key, new_data);
-    return this;
+    return new_data;
   }
 
   update(key: string, cb: (old_data: I | undefined) => I) {
@@ -71,6 +71,8 @@ export default class Sagdb<I extends Input = Input> {
     const new_data = cb(old_data);
     this.set(key, new_data);
     this.emit("update", key, old_data, new_data);
+
+    return [old_data, new_data];
   }
 
   delete(key: string) {
@@ -78,7 +80,7 @@ export default class Sagdb<I extends Input = Input> {
     lodash.unset(old_data, key);
     this.save(old_data);
     this.emit("delete", key);
-    return this;
+    return old_data;
   }
 
   get(key: string) {
@@ -90,12 +92,12 @@ export default class Sagdb<I extends Input = Input> {
 
     if (old_data === undefined) {
       this.set(key, data as any);
-      return this;
+      return data;
     }
 
     if (typeof old_data === "number") {
       this.set(key, +(data + old_data) as any);
-      return this;
+      return +(data + old_data);
     }
 
     return false;
