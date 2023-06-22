@@ -56,9 +56,9 @@ const db = new Sagdb({ name: "database" });
 
 <br><br>
 
-# <i class="fa-solid fa-terminal"></i> **COMMANDS**
+# <i class="fa-solid fa-terminal"></i> **Method's**
 
-<br>
+
 
 ## **set**
 
@@ -207,7 +207,7 @@ table.filter(callback | data_object, new_data); // -> old_data:  {_id: "uuid", d
 ## **remove**
 
 ```ts
-table.update(callback); // -> {_id: "uuid", data: 1, createdAt: number, updatedAt: number} | undefined
+table.update(callback, all?: boolean); // -> {_id: "uuid", data: 1, createdAt: number, updatedAt: number} | undefined
 ```
 
 <br><br>

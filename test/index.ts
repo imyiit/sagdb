@@ -37,5 +37,7 @@ table.on("update", (old_data, new_data) => {
   console.log({ old_data, new_data });
 });
 
-table.add({ uid: "123", exp: 1 });
-table.update(["data", { uid: "123" }], { exp: 15, uid: "123" });
+table.add({ uid: "123", exp: 5 });
+table.add({ uid: "323", exp: 2 });
+table.update(["data", { uid: "123" }], { exp: 1, uid: "123" });
+table.remove((data) => data.data.exp === 1);

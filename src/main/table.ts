@@ -112,15 +112,20 @@ export class Table<I extends Input> {
     return lodash.filter(this.data, callback);
   }
 
-  remove(callback: (res: Data<I>) => boolean) {
-    lodash.remove(this.data, callback);
+  remove(callback: (res: Data<I>) => boolean, all?: boolean) {
+    if (all) {
+      this.data = this.data.filter((val) => !callback(val));
+      const json_data = lodash.set(this.all(), this.key, this.data);
+      this.save(json_data);
+      this.emit("remove", this.data);
+      return this.data;
+    }
 
+    lodash.remove(this.data, callback);
     const old_data = lodash.filter(this.data, callback);
     const json_data = lodash.set(this.all(), this.key, this.data);
-
     this.save(json_data);
     this.emit("remove", old_data);
-
     return this.data;
   }
 
