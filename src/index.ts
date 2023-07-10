@@ -1,5 +1,3 @@
-import Sagdb from "./main";
-
-export default Sagdb;
+export { default as Sagdb } from "./main";
 
 export { Table } from "./main/table";
