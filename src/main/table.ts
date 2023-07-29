@@ -40,15 +40,17 @@ export class Table<I extends Input> {
   private key: string;
   private data: Data<I>[];
   private readonly emitter: EventEmitter;
+  private default_data: I | undefined;
 
-  constructor(Sagdb: Sagdb, key: string) {
+  constructor(Sagdb: Sagdb, key: string, default_data?: I) {
     this.name = Sagdb.name;
     this.folder = Sagdb.folder;
     this.minify = Sagdb.minify;
     this.key = key;
     this.emitter = new EventEmitter();
+    this.default_data = default_data;
 
-    const res = lodash.get(this.all(), this.key) as Data<I>[] | undefined;
+    const res = lodash.get(this._all(), this.key) as Data<I>[] | undefined;
     this.data = res ? res : [];
   }
 
@@ -56,7 +58,7 @@ export class Table<I extends Input> {
     return save(data, this.folder, this.minify);
   }
 
-  private all(): { [key: string]: any } {
+  private _all(): { [key: string]: any } {
     return JSON.parse(fs.readFileSync(`./${this.folder}.json`).toString());
   }
 
@@ -65,7 +67,7 @@ export class Table<I extends Input> {
 
     this.data.push(result);
 
-    const json_data = lodash.set(this.all(), this.key, this.data);
+    const json_data = lodash.set(this._all(), this.key, this.data);
 
     this.save(json_data);
     this.emit("add", result);
@@ -78,30 +80,58 @@ export class Table<I extends Input> {
   }
 
   find<T extends keyof Data<I>>(callback: Callback<I, T>) {
-    return lodash.find(this.data, callback);
+    return (
+      lodash.find(this.data, callback) ||
+      (this.default_data ? Data<I>(this.default_data) : undefined)
+    );
   }
 
   update<T extends keyof Data<I>>(
     callback: Callback<I, T>,
-    data: I,
+    data:
+      | I
+      | ((old_data: I | typeof this.default_data) => I)
+      | ((default_data: I | typeof this.default_data) => I),
     force?: boolean
   ) {
     const old_data_index = lodash.findIndex(this.data, callback);
+    const old_data = lodash.find(this.data, callback);
 
-    if (old_data_index < 0) {
+    if (typeof data === "function") {
+      if (!old_data) {
+        if (force) {
+          const new_data = data(this.default_data);
+          this.emit("update", old_data, data(new_data));
+          this.add(data(new_data));
+          return new_data;
+        }
+        return undefined;
+      }
+
+      const new_data = Data<I>(data(old_data.data));
+      this.data.splice(old_data_index, 1, new_data);
+
+      const json_data = lodash.set(this._all(), this.key, this.data);
+      this.save(json_data);
+      this.emit("update", old_data, new_data);
+      return lodash.find(this.data, callback);
+    }
+
+    //--------------------------------------
+
+    if (!old_data) {
       if (force) {
-        return this.add(data);
+        return this.add(this.default_data || data);
       }
 
       return undefined;
     }
 
-    const old_data = lodash.find(this.data, callback);
     const new_data = Data<I>(data, old_data);
 
     this.data.splice(old_data_index, 1, new_data);
 
-    const json_data = lodash.set(this.all(), this.key, this.data);
+    const json_data = lodash.set(this._all(), this.key, this.data);
     this.save(json_data);
     this.emit("update", old_data, new_data);
 
@@ -115,7 +145,7 @@ export class Table<I extends Input> {
   remove(callback: (res: Data<I>) => boolean, all?: boolean) {
     if (all) {
       this.data = this.data.filter((val) => !callback(val));
-      const json_data = lodash.set(this.all(), this.key, this.data);
+      const json_data = lodash.set(this._all(), this.key, this.data);
       this.save(json_data);
       this.emit("remove", this.data);
       return this.data;
@@ -123,9 +153,13 @@ export class Table<I extends Input> {
 
     lodash.remove(this.data, callback);
     const old_data = lodash.filter(this.data, callback);
-    const json_data = lodash.set(this.all(), this.key, this.data);
+    const json_data = lodash.set(this._all(), this.key, this.data);
     this.save(json_data);
     this.emit("remove", old_data);
+    return this.data;
+  }
+
+  all() {
     return this.data;
   }
 
