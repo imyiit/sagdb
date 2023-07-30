@@ -58,8 +58,6 @@ const db = new Sagdb({ name: "database" });
 
 # <i class="fa-solid fa-terminal"></i> **Method's**
 
-
-
 ## **set**
 
 - Set any value with **key**.
@@ -191,7 +189,7 @@ table.findById("uuid"); // -> {_id: "uuid", data: 1, createdAt: number, updatedA
 ## **update**
 
 ```ts
-table.update(callback | data_object, new_data); // -> {_id: "uuid", data: 1, createdAt: number, updatedAt: number} | undefined
+table.update(callback | data_object, new_data, force?: boolean); // -> {_id: "uuid", data: 1, createdAt: number, updatedAt: number} | undefined
 ```
 
 <br>

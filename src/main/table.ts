@@ -40,16 +40,15 @@ export class Table<I extends Input> {
   private key: string;
   private data: Data<I>[];
   private readonly emitter: EventEmitter;
-  private default_data: I | undefined;
+  private default_data: I;
 
-  constructor(Sagdb: Sagdb, key: string, default_data?: I) {
+  constructor(Sagdb: Sagdb, key: string, default_data: I) {
     this.name = Sagdb.name;
     this.folder = Sagdb.folder;
     this.minify = Sagdb.minify;
     this.key = key;
     this.emitter = new EventEmitter();
     this.default_data = default_data;
-
     const res = lodash.get(this._all(), this.key) as Data<I>[] | undefined;
     this.data = res ? res : [];
   }
@@ -62,7 +61,13 @@ export class Table<I extends Input> {
     return JSON.parse(fs.readFileSync(`./${this.folder}.json`).toString());
   }
 
-  add(data: I) {
+  /**
+   *
+   * @param {I} data You can add any data without function
+   * @example Table.add({uid : "123"})
+   * @returns {Data<I>} Added data
+   */
+  add(data: I): Data<I> {
     const result = Data<I>(data);
 
     this.data.push(result);
@@ -75,10 +80,22 @@ export class Table<I extends Input> {
     return result;
   }
 
-  findById(id: string) {
+  /**
+   *
+   * @param {string} id  You can find data with uniq id
+   * @example Table.find("_id")
+   * @returns {Data<I> | undefined} Finded data or undefined
+   */
+  findById(id: string): Data<I> | undefined {
     return this.data.find((res) => res._id === id);
   }
 
+  /**
+   *
+   * @param {Callback<I,T>} callback Find data with Callback
+   * @example Table.find(["data", { uid: "123" }])
+   * @returns
+   */
   find<T extends keyof Data<I>>(callback: Callback<I, T>) {
     return (
       lodash.find(this.data, callback) ||
@@ -86,17 +103,34 @@ export class Table<I extends Input> {
     );
   }
 
+  /**
+   *
+   * @param {Callback<I,T>} callback Find data what you want to update.
+   * @param {I} data New data you want to update.
+   * @example
+   * Table.update(["data", { uid: "123" }], { uid: "321" });
+   * //Or
+   * Table.update(["data", { uid: "123" }], (old_data) => {
+   *   return { ...old_data, uid: "345" };
+   * });
+   * //Or
+   * Table.update(["data", { uid: "123" }], (old_data) => {
+   *   return { uid : old_data?.uid };
+   * });
+   * @param {Boolean} force
+   * @description If force is true and if there is no data, the default data comes by default.
+   * @returns Updated data.
+   */
   update<T extends keyof Data<I>>(
     callback: Callback<I, T>,
     data:
       | I
-      | ((old_data: I | typeof this.default_data) => I)
-      | ((default_data: I | typeof this.default_data) => I),
+      | ((old_data: I | typeof this.default_data) => Partial<I>)
+      | ((default_data: I | typeof this.default_data) => Partial<I>),
     force?: boolean
   ) {
     const old_data_index = lodash.findIndex(this.data, callback);
     const old_data = lodash.find(this.data, callback);
-
     if (typeof data === "function") {
       if (!old_data) {
         if (force) {
@@ -107,23 +141,23 @@ export class Table<I extends Input> {
         }
         return undefined;
       }
-
-      const new_data = Data<I>(data(old_data.data));
+      const new_data = Data<I>(
+        {
+          ...(this.default_data as any),
+          ...data(old_data.data),
+        },
+        old_data
+      );
       this.data.splice(old_data_index, 1, new_data);
-
       const json_data = lodash.set(this._all(), this.key, this.data);
       this.save(json_data);
       this.emit("update", old_data, new_data);
       return lodash.find(this.data, callback);
     }
-
-    //--------------------------------------
-
     if (!old_data) {
       if (force) {
         return this.add(this.default_data || data);
       }
-
       return undefined;
     }
 
@@ -138,11 +172,23 @@ export class Table<I extends Input> {
     return lodash.find(this.data, callback);
   }
 
-  filter<T extends keyof Data<I>>(callback: Callback<I, T>) {
+  /**
+   *
+   * @param {Callback<I,T>} callback Find data what you want to update.
+   * @example Table.filter((data) => data.data.exp === 1);
+   * @returns {Data<I>[]} Filtered data array.
+   */
+  filter<T extends keyof Data<I>>(callback: Callback<I, T>): Data<I>[] {
     return lodash.filter(this.data, callback);
   }
 
-  remove(callback: (res: Data<I>) => boolean, all?: boolean) {
+  /**
+   *
+   * @param {Callback<I,T>} callback Find data what you want to update.
+   * @example Table.filter((data) => data.data.exp === 1);
+   * @returns {Data<I>[]} Delete data array.
+   */
+  remove(callback: (res: Data<I>) => boolean, all?: boolean): Data<I>[] {
     if (all) {
       this.data = this.data.filter((val) => !callback(val));
       const json_data = lodash.set(this._all(), this.key, this.data);
@@ -159,7 +205,10 @@ export class Table<I extends Input> {
     return this.data;
   }
 
-  all() {
+  /**
+   * @returns {Data<I>[]} Return all data.
+   */
+  all(): Data<I>[] {
     return this.data;
   }
 

@@ -44,7 +44,9 @@ table.on("update", (old_data, new_data) => {
 table.add({ uid: "123", exp: 5 });
 table.add({ uid: "323", exp: 2 });
 table.update(["data", { uid: "123" }], { exp: 1, uid: "123" });
+table.find(["data", { uid: "123" }]);
 table.remove((data) => data.data.exp === 1);
+table.filter((data) => data.data.exp === 1);
 table.update(["data", { uid: "123" }], (old_data) => {
   console.log({ old_data });
   return { exp: 1, uid: "" };
@@ -64,3 +66,19 @@ table.update(
   },
   true
 );
+
+table.update(
+  ["data", { uid: userId }],
+  (old_data) => {
+    return {
+      exp: (old_data?.exp || 10) + 1,
+    };
+  },
+  true
+);
+
+table.update(["data", { uid: "123" }], (old_data) => {
+  return { ...old_data };
+});
+
+table.remove((res) => res.data.uid === "323" || res.data.uid === "123123");
