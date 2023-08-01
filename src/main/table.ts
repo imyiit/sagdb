@@ -92,12 +92,12 @@ export class Table<I extends Input> {
   ): any;
   update<T extends keyof Data<I>>(
     callback: Callback<I, T>,
-    data: (old_data: I) => Partial<I>,
+    data: (old_data: I) => I,
     force?: boolean
   ): any;
   update<T extends keyof Data<I>>(
     callback: Callback<I, T>,
-    data: I | ((old_data: I) => Partial<I>),
+    data: I | ((old_data: I) => I),
     force?: boolean
   ) {
     const old_data_index = lodash.findIndex(this.data, callback);

@@ -71,6 +71,7 @@ table.update(
   ["data", { uid: userId }],
   (old_data) => {
     return {
+      ...old_data,
       exp: (old_data?.exp || 10) + 1,
     };
   },
