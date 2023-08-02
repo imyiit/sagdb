@@ -60,19 +60,7 @@ table.update(
   ["data", { uid: userId }],
   (old_data) => {
     return {
-      exp: (old_data?.exp || 10) + 1,
-      uid: old_data?.uid || userId,
-    };
-  },
-  true
-);
-
-table.update(
-  ["data", { uid: userId }],
-  (old_data) => {
-    return {
-      ...old_data,
-      exp: (old_data?.exp || 10) + 1,
+      exp: old_data.exp + 1,
     };
   },
   true
@@ -81,5 +69,3 @@ table.update(
 table.update(["data", { uid: "123" }], (old_data) => {
   return { ...old_data };
 });
-
-table.remove((res) => res.data.uid === "323" || res.data.uid === "123123");

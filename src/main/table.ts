@@ -3,8 +3,12 @@ import lodash from "lodash";
 import EventEmitter from "events";
 import { v4 as uuidv4 } from "uuid";
 
-import Sagdb, { type Input } from "./index";
+import Sagdb, { type Input as Inp } from "./index";
 import { save } from "../Utils";
+
+type Input = {
+  [key: string]: Inp;
+};
 
 interface Data<I extends Input> {
   _id: string;
@@ -18,9 +22,9 @@ type Callback<I extends Input, T extends keyof Data<I>> =
   | [key: T, value: Partial<Data<I>[T]>];
 
 interface Events<I extends Input = Input> {
-  add: [new_data: I | undefined];
-  update: [old_data: I | undefined, new_data: I];
-  remove: [old_data: I];
+  add: [new_data: Data<I> | undefined];
+  update: [old_data: Data<I> | undefined, new_data: Data<I>];
+  remove: [old_data: Data<I>[]];
 }
 
 function Data<I extends Input>(data: I, old_data?: Data<I>): Data<I> {
@@ -92,12 +96,12 @@ export class Table<I extends Input> {
   ): any;
   update<T extends keyof Data<I>>(
     callback: Callback<I, T>,
-    data: (old_data: I) => I,
+    data: (old_data: I) => Partial<I>,
     force?: boolean
   ): any;
   update<T extends keyof Data<I>>(
     callback: Callback<I, T>,
-    data: I | ((old_data: I) => I),
+    data: I | ((old_data: I) => Partial<I>),
     force?: boolean
   ) {
     const old_data_index = lodash.findIndex(this.data, callback);
@@ -105,9 +109,13 @@ export class Table<I extends Input> {
     if (typeof data === "function") {
       if (!old_data) {
         if (force) {
-          const new_data = data(this.default_data);
-          this.emit("update", old_data, data(new_data));
-          this.add(data(new_data));
+          const new_data = Data<I>({
+            ...(this.default_data as any),
+            ...data(this.default_data),
+          });
+          this.data.push(new_data);
+          const json_data = lodash.set(this._all(), this.key, this.data);
+          this.save(json_data);
           return new_data;
         }
         return undefined;
@@ -119,6 +127,9 @@ export class Table<I extends Input> {
         },
         old_data
       );
+
+      console.log("31", new_data);
+
       this.data.splice(old_data_index, 1, new_data);
       const json_data = lodash.set(this._all(), this.key, this.data);
       this.save(json_data);
