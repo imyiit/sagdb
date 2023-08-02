@@ -128,8 +128,6 @@ export class Table<I extends Input> {
         old_data
       );
 
-      console.log("31", new_data);
-
       this.data.splice(old_data_index, 1, new_data);
       const json_data = lodash.set(this._all(), this.key, this.data);
       this.save(json_data);
