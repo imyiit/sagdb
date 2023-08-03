@@ -115,6 +115,7 @@ export class Table<I extends Input> {
           });
           this.data.push(new_data);
           const json_data = lodash.set(this._all(), this.key, this.data);
+          this.emit("update", old_data, new_data);
           this.save(json_data);
           return new_data;
         }
