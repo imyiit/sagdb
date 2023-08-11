@@ -83,10 +83,7 @@ export class Table<I extends Input> {
   }
 
   find<T extends keyof Data<I>>(callback: Callback<I, T>) {
-    return (
-      lodash.find(this.data, callback) ||
-      (this.default_data ? Data<I>(this.default_data) : undefined)
-    );
+    return lodash.find(this.data, callback) || Data<I>(this.default_data);
   }
 
   update<T extends keyof Data<I>>(
